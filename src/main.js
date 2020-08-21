@@ -12,7 +12,6 @@ axios.defaults.baseURL = `http://127.0.0.1:8888/api/private/v1/`
 //将axios挂载到vue的原型上
 Vue.prototype.$http = axios
 
-
 Vue.config.productionTip = false
 
 new Vue({
