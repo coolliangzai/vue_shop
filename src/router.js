@@ -1,15 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-<<<<<<< HEAD
-Vue.use(VueRouter)
-
-const routes = []
-
-const router = new VueRouter({
-  routes
-})
-
-=======
 import login from './components/Login'
 import home from './components/Home'
 Vue.use(VueRouter)
@@ -37,5 +27,4 @@ router.beforeEach((to, from, next) => {
   //如果有token值直接放行
   next()
 })
->>>>>>> login
 export default router
