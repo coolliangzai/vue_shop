@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div id="app"></div>
 </template>
 
@@ -7,3 +8,11 @@
 
 <style>
 </style>
+=======
+  <div id="app">
+    <router-view></router-view>
+  </div>
+</template>
+<style>
+</style>
+>>>>>>> login
