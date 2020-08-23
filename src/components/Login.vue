@@ -82,7 +82,7 @@ export default {
         if (!valid) {
           return
         } else {
-          this.$http({
+          this.axios({
             method: 'post',
             url: 'login',
             params: this.loginForm,
