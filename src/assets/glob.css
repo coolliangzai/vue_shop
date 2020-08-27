@@ -4,4 +4,6 @@ html,
     height: 100%;
     margin: 0;
     padding: 0;
+    /* 设置屏幕的最小宽度 */
+    min-width: 1366px;
 }

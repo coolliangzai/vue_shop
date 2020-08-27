@@ -45,7 +45,7 @@
             <el-button type="danger" icon="el-icon-delete" @click="deleteUserById(scope.row.id)"></el-button>
 
             <el-tooltip effect="dark" content="分配角色" placement="top-start" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting"></el-button>
+              <el-button type="warning" icon="el-icon-setting" @click="setRole(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -107,6 +107,31 @@
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色弹窗 -->
+    <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%">
+      <div>
+        <p>
+          用户姓名
+          :{{roleList.username}}
+        </p>
+        <p>用户角色:{{roleList.role_name}}</p>
+        <p>
+          分配新角色:
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="(item,index) in setRoleList"
+              :key="index"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer">
+        <el-button @click="setRoleDialogVisible = false,selectedRoleId = ''">取 消</el-button>
+        <el-button type="primary" @click="setRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -154,6 +179,11 @@ export default {
       EditdialogVisible: false,
       // 定义一个变量接收是否删除用户
       confirmResult: '',
+      roleList: {},
+      //所有角色的数据列表
+      setRoleList: [],
+      selectedRoleId: '',
+      setRoleDialogVisible: false,
       addForm: {
         username: 'admin1',
         password: '',
@@ -194,6 +224,7 @@ export default {
           { validator: checkPhoneNumber, trigger: 'blur' },
         ],
       },
+      // 验证规则
       editFormrules: {
         email: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -224,14 +255,11 @@ export default {
           pagesize: this.pageSize,
         },
       }).then((res) => {
-        //console.log(res.data)
         if (res.data.meta.status !== 200) {
           return this.$message.error('获取用户列表失败!')
         } else {
           this.userlist = res.data.data.users
           this.total = res.data.data.total
-          // console.log(this.total)
-          //console.log(this.userlist)
         }
       })
     },
@@ -350,15 +378,48 @@ export default {
         this.$message.info('已取消删除')
       } else {
         this.axios.delete('users/' + id).then((res) => {
-          if (res.data.meta.status !== 200) {
-            return
-          } else {
+          if (res.data.meta.status !== 200 && res.data.meta.status === 400) {
+            //console.log(res)
+            return this.$message.error('不允许删除admin账户')
+          } else if (res.data.meta.status === 200) {
+            this.$message.success('删除成功')
             this.getUserList()
-            console.log(res)
+            //console.log(res)
           }
         })
-        this.$message.success('删除成功')
       }
+    },
+    setRole(role) {
+      //console.log(role)
+      ;(this.roleList = role),
+        //获取所有角色的列表
+        this.axios.get('roles').then((res) => {
+          this.setRoleList = res.data.data
+          // console.log(res)
+        })
+      this.setRoleDialogVisible = true
+    },
+    setRoleInfo() {
+      // 点击确定将下拉菜单处选中的置为空
+
+      this.axios
+        .put('users/' + this.roleList.id + '/role', {
+          rid: this.selectedRoleId,
+        })
+        .then((res) => {
+          console.log(res)
+          if (res.data.meta.status === 400) {
+            this.$message.error('分配角色失败,不允许修改admin账户')
+          } else if (res.data.meta.status !== 200) {
+            this.$message.error('分配角色失败')
+          } else {
+            this.$message.success('分配角色成功')
+            // 重新渲染获取数据部分
+            this.getUserList()
+          }
+        })
+      this.selectedRoleId = ''
+      this.setRoleDialogVisible = false
     },
   },
 }
