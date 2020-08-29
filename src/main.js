@@ -7,6 +7,9 @@ import './assets/glob.css'
 import './assets/fonts/iconfont.css'
 //引入axios
 import axios from 'axios'
+// 引入插件
+import TreeTable from 'vue-table-with-tree-grid'
+Vue.component('tree-table', TreeTable)
 //通过axios请求拦截器添加token，保证拥有获取数据的权限。
 axios.interceptors.request.use(config => {
   //为请求头添加token验证的Authorization字段
