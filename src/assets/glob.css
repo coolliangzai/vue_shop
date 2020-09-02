@@ -11,3 +11,7 @@ html,
 .el-cascader-panel {
     height: 300px !important;
 }
+
+.ql-editor {
+    min-height: 300px !important;
+}

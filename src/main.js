@@ -9,6 +9,26 @@ import './assets/fonts/iconfont.css'
 import axios from 'axios'
 // 引入插件
 import TreeTable from 'vue-table-with-tree-grid'
+// 引入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+//引入相关样式
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+//注册为全局组件
+Vue.use(VueQuillEditor, /* { default global options } */ )
+Vue.filter('DateFormate', function (origindate) {
+
+  var newDate = new Date(origindate)
+  var year = newDate.getFullYear()
+  //padStart()一共接受两个参数，第一个参数用来指定字符串的最小长度，第二个参数是用来补全的字符串补全到字符串的头部。
+  var month = (newDate.getMonth() + 1 + '').padStart(2, '0')
+  var day = (newDate.getDate() + '').padStart(2, '0')
+  var hh = (newDate.getHours() + '').padStart(2, '0')
+  var mm = (newDate.getMinutes() + '').padStart(2, '0')
+  var ss = (newDate.getSeconds() + '').padStart(2, '0')
+  return year + '-' + month + '-' + day + '-' + hh + ':' + mm + ':' + ss
+})
 Vue.component('tree-table', TreeTable)
 //通过axios请求拦截器添加token，保证拥有获取数据的权限。
 axios.interceptors.request.use(config => {
